@@ -11,11 +11,11 @@ import Footer from "@/components/Footer";
 // ─── Data ──────────────────────────────────────────────────────────────────────
 const fleet = [
   {
-    name: "2022 GMC Yukon Denali",
+    name: "2022 GMC Yukon",
     category: "Luxury SUV",
     pax: 6,
     lug: 6,
-    img: "https://inventory.autoznetwork.com/16/88892/w_1200%2Cformat_avif/6912a73546df9.jpg",
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcToIztEdwER_n5I4VcT0-6XuAnmjN2Ue_2uZqxZHS08kw&s=10",
   },
   {
     name: "Chevy Suburban",
@@ -56,7 +56,7 @@ const services = [
     title: "Night Out",
     subtitle: "Events & Special Occasions",
     desc: "Arrive in style. We handle the driving so you can enjoy every moment.",
-    img: "https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?q=80&w=1400&auto=format&fit=crop",
+    img: "https://plus.unsplash.com/premium_photo-1670984940156-c7f833fe8397?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mzd8fG5pZ2h0b3V0fGVufDB8fDB8fHww",
   },
 ];
 
