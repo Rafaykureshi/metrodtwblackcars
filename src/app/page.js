@@ -477,7 +477,7 @@ export default function Home() {
           className="absolute inset-0 bg-cover bg-center"
           style={{
             backgroundImage:
-              "url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=2000&auto=format&fit=crop')",
+              "url('https://images.unsplash.com/photo-1769787301187-0fab290ba2f2?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Z21jJTIweXVrb258ZW58MHx8MHx8fDA%3D')",
           }}
         >
           <div className="absolute inset-0 bg-black/80" />
