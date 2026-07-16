@@ -105,7 +105,7 @@ export default function Footer() {
 
                         <div className="flex gap-3">
                             <a
-                                href="#"
+                                href="https://www.facebook.com/profile.php?id=61591945043773"
                                 aria-label="Facebook"
                                 className="h-11 w-11 rounded-full border border-white/10 bg-white/5 hover:bg-[#1877F2] hover:border-[#1877F2] transition-all duration-300 flex items-center justify-center group"
                             >
@@ -113,7 +113,7 @@ export default function Footer() {
                             </a>
 
                             <a
-                                href="#"
+                                href="https://www.instagram.com/metrodtwblackcars?utm_source=qr&igsh=MTdzNm1qbm5qbnN5cA=="
                                 aria-label="Instagram"
                                 className="h-11 w-11 rounded-full border border-white/10 bg-white/5 hover:border-pink-500 transition-all duration-300 flex items-center justify-center group"
                             >
@@ -121,7 +121,7 @@ export default function Footer() {
                             </a>
 
                             <a
-                                href="https://wa.me/12487473474"
+                                href="https://wa.me/17342732916"
                                 target="_blank"
                                 rel="noreferrer"
                                 aria-label="WhatsApp"
