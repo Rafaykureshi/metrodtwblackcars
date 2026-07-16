@@ -24,7 +24,6 @@ export const metadata = {
     images: ["/og-image.svg"],
   },
   robots: { index: true, follow: true },
-  icons: { icon: "/favicon.jpeg" },
 };
 
 const localBusinessSchema = {
