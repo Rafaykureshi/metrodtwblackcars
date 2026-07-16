@@ -172,11 +172,11 @@ function BookInner() {
                             <div className="text-[9px] uppercase tracking-[0.4em] text-zinc-600 mb-3 font-bold">
                                 Immediate Assistance
                             </div>
-                            <a href="tel:+12487473474" className="font-serif text-2xl text-[#9b815e] hover:text-white transition">
-                                (248) 747-3474
+                            <a href="tel:+17342732916" className="font-serif text-2xl text-[#9b815e] hover:text-white transition">
+                                (734) 273-2916
                             </a>
                             <div className="mt-2">
-                                <a href="https://wa.me/12487473474" target="_blank" rel="noreferrer"
+                                <a href="https://wa.me/17342732916" target="_blank" rel="noreferrer"
                                     className="text-[10px] uppercase tracking-widest text-zinc-600 hover:text-[#9b815e] transition">
                                     WhatsApp →
                                 </a>
