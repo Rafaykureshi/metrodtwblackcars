@@ -156,7 +156,7 @@ export default function Home() {
               Book Your Ride <ArrowRight size={14} />
             </Link>
             <a
-              href="tel:+12487473474"
+              href="tel:+7342732916"
               className="border border-white/25 text-white px-10 py-5 text-xs font-black uppercase tracking-[0.4em] hover:bg-white hover:text-black transition-all duration-300 inline-flex items-center gap-3"
             >
               <Phone size={14} /> Call Now
@@ -511,10 +511,10 @@ export default function Home() {
               Book Online <ArrowRight size={14} />
             </Link>
             <a
-              href="tel:+12487473474"
+              href="tel:+17342732916"
               className="border border-white/25 text-white px-12 py-5 text-xs font-black uppercase tracking-[0.4em] hover:bg-white hover:text-black transition-all duration-300 inline-flex items-center gap-3 justify-center"
             >
-              <Phone size={14} /> (248) 747-3474
+              <Phone size={14} /> (734) 273-2916
             </a>
           </div>
         </div>

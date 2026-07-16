@@ -502,11 +502,11 @@ function BookInner() {
                                 <div className="text-[9px] uppercase tracking-[0.4em] text-[#9b815e]/70 font-bold mb-3">
                                     Need Help?
                                 </div>
-                                <a href="tel:+12487473474" className="font-serif text-xl text-white hover:text-[#9b815e] transition flex items-center justify-center gap-2">
-                                    <Phone size={16} /> (248) 747-3474
+                                <a href="tel:+17342732916" className="font-serif text-xl text-white hover:text-[#9b815e] transition flex items-center justify-center gap-2">
+                                    <Phone size={16} /> (734) 273-2916
                                 </a>
                                 <div className="mt-2">
-                                    <a href="https://wa.me/12487473474" target="_blank" rel="noreferrer"
+                                    <a href="https://wa.me/17342732916" target="_blank" rel="noreferrer"
                                         className="text-[10px] uppercase tracking-widest text-zinc-500 hover:text-[#9b815e] transition">
                                         WhatsApp →
                                     </a>

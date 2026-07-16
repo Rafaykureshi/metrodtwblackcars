@@ -31,7 +31,7 @@ const localBusinessSchema = {
   "@type": "TaxiService",
   name: "Metro DTW Black Cars",
   url: "https://www.metrodtwblackcars.com",
-  telephone: "+12487473474",
+  telephone: "+17342732916",
   email: "bookings@metrodtwblackcars.com",
   address: { "@type": "PostalAddress", addressLocality: "Detroit", addressRegion: "MI", addressCountry: "US" },
   areaServed: ["Detroit", "Metro Detroit", "Detroit Metropolitan Wayne County Airport", "Ann Arbor", "Troy", "Birmingham"],
