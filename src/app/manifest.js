@@ -1,0 +1,3 @@
+export default function manifest() {
+  return { name: "Metro DTW Black Cars", short_name: "Metro DTW", description: "Luxury black car and chauffeur service for Detroit and DTW Airport.", start_url: "/", display: "standalone", background_color: "#09090b", theme_color: "#09090b", icons: [{ src: "/icon-192.png", sizes: "192x192", type: "image/png" }, { src: "/icon-512.png", sizes: "512x512", type: "image/png" }] };
+}

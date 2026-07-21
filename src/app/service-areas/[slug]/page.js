@@ -4,6 +4,8 @@ import { ArrowRight, BriefcaseBusiness, Clock3, MapPin, Plane, ShieldCheck } fro
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BackToTop from "@/components/BackToTop";
+import JsonLd from "@/components/JsonLd";
+import { BUSINESS_NAME, PHONE_E164, SITE_URL } from "@/data/site";
 import { getServiceArea, serviceAreas } from "@/data/serviceAreas";
 
 export function generateStaticParams() {
@@ -26,7 +28,9 @@ export async function generateMetadata({ params }) {
       title: `${title} | Metro DTW Black Cars`,
       description,
       url: `/service-areas/${city.slug}`,
+      type: "website",
     },
+    twitter: { card: "summary_large_image", title, description },
   };
 }
 
@@ -41,18 +45,30 @@ export default async function ServiceAreaPage({ params }) {
     name: `${city.name} to DTW Airport Car Service`,
     provider: {
       "@type": "TaxiService",
-      name: "Metro DTW Black Cars",
-      telephone: "+17342732916",
-      url: "https://www.metrodtwblackcars.com",
+      name: BUSINESS_NAME,
+      telephone: PHONE_E164,
+      url: SITE_URL,
     },
     areaServed: { "@type": "City", name: city.name },
     serviceType: ["Airport Transfer", "Black Car Service", "Corporate Transportation", "Private Chauffeur"],
   };
 
+  const pageUrl = `${SITE_URL}/service-areas/${city.slug}`;
+  const breadcrumb = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: "Service Areas", item: `${SITE_URL}/#cities-we-serve-heading` },
+      { "@type": "ListItem", position: 3, name: city.name, item: pageUrl },
+    ],
+  };
+
   return (
     <main className="min-h-screen bg-white">
       <Navbar />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+      <JsonLd data={schema} />
+      <JsonLd data={breadcrumb} />
 
       <section className="relative flex min-h-[620px] items-center overflow-hidden bg-zinc-950 px-6 pb-24 pt-36 text-center">
         <div

@@ -121,7 +121,7 @@ export default function PrivacyPage() {
                             </ul>
 
                             <p>
-                                To exercise your rights, please contact us at book@metrodtwblackcars.com or +1 (248) 747-3474.
+                                To exercise your rights, please contact us at book@metrodtwblackcars.com or +1 (734) 273-2916.
                             </p>
                         </div>
 

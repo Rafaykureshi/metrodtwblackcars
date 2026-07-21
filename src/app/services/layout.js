@@ -1,0 +1,2 @@
+export const metadata = { title: "Detroit Black Car, Airport & Chauffeur Services", description: "Explore DTW airport transfers, corporate transportation, private point-to-point rides, special-event service, and hourly chauffeur transportation in Metro Detroit.", alternates: { canonical: "/services" }, openGraph: { title: "Luxury Transportation Services | Metro DTW Black Cars", description: "Airport, corporate, hourly, and private chauffeur transportation across Metro Detroit.", url: "/services" } };
+export default function ServicesLayout({ children }) { return children; }

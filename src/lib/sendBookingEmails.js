@@ -60,7 +60,7 @@ export async function sendBookingEmails(booking) {
           ${content}
           <div style="margin-top:26px;padding:18px;background:#111;text-align:center;color:#fff">
             <div style="font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:#aaa">Immediate assistance</div>
-            <div style="margin-top:8px;font-size:20px;color:#c0a47e;font-weight:800">(248) 747-3474</div>
+            <div style="margin-top:8px;font-size:20px;color:#c0a47e;font-weight:800">(734) 273-2916</div>
           </div>
         </div>
       </div>

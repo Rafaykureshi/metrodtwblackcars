@@ -1,0 +1,4 @@
+import { faqItems } from "@/data/site";
+export default function FaqSection() {
+  return <section className="bg-white px-6 py-24" aria-labelledby="faq-heading"><div className="mx-auto max-w-4xl"><div className="text-center"><p className="text-[10px] font-black uppercase tracking-[0.45em] text-[#9b815e]">Helpful Information</p><h2 id="faq-heading" className="mt-4 font-serif text-4xl text-zinc-950 md:text-5xl">Frequently Asked Questions</h2></div><div className="mt-12 divide-y divide-zinc-200 border-y border-zinc-200">{faqItems.map(({question,answer})=><details key={question} className="group py-5"><summary className="cursor-pointer list-none pr-8 text-lg font-semibold text-zinc-950 marker:hidden">{question}<span className="float-right text-[#9b815e] transition group-open:rotate-45" aria-hidden="true">+</span></summary><p className="mt-4 max-w-3xl leading-7 text-zinc-600">{answer}</p></details>)}</div></div></section>;
+}

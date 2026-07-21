@@ -7,6 +7,8 @@ import {
 import Link from "next/link";
 import BackToTop from "@/components/BackToTop";
 import Footer from "@/components/Footer";
+import CitiesSection from "@/components/CitiesSection";
+import FaqSection from "@/components/FaqSection";
 
 // ─── Data ──────────────────────────────────────────────────────────────────────
 const fleet = [
@@ -519,6 +521,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+      <FaqSection />
+      <CitiesSection />
       <BackToTop />
       <Footer />
     </main>
