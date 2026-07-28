@@ -2,12 +2,9 @@
 import Link from "next/link";
 import { Phone, ArrowRight } from "lucide-react";
 import { FaFacebookF, FaInstagram, FaWhatsapp } from "react-icons/fa";
-import CitiesWeServe from "@/components/CitiesWeServe";
 
 export default function Footer() {
     return (
-        <>
-        <CitiesWeServe dark />
         <footer className="bg-zinc-950 text-white pt-24 pb-12 px-6 border-t border-white/5">
             <div className="max-w-7xl mx-auto">
 
@@ -165,6 +162,5 @@ export default function Footer() {
 
             </div>
         </footer>
-        </>
     );
 }

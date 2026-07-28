@@ -7,8 +7,7 @@ import {
 import Link from "next/link";
 import BackToTop from "@/components/BackToTop";
 import Footer from "@/components/Footer";
-import CitiesSection from "@/components/CitiesSection";
-import FaqSection from "@/components/FaqSection";
+import CitiesWeServe from "@/components/CitiesWeServe";
 
 // ─── Data ──────────────────────────────────────────────────────────────────────
 const fleet = [
@@ -521,8 +520,7 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <FaqSection />
-      <CitiesSection />
+      <CitiesWeServe dark />
       <BackToTop />
       <Footer />
     </main>

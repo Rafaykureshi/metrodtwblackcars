@@ -208,11 +208,11 @@ function BookInner() {
 
     // ── BOOKING FORM ───────────────────────────────────────────────────────
     return (
-        <main className="min-h-screen bg-zinc-950">
+        <main className="relative isolate min-h-screen bg-zinc-950">
             <Navbar />
 
             {/* Full-page background */}
-            <div className="fixed inset-0 z-0">
+            <div className="pointer-events-none fixed inset-0 -z-10">
                 <div
                     className="absolute inset-0 bg-cover bg-center opacity-10"
                     style={{ backgroundImage: "url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=2000&auto=format&fit=crop')" }}
@@ -516,7 +516,9 @@ function BookInner() {
                     </aside>
                 </div>
             </div>
-            <Footer />
+            <div className="relative z-10">
+                <Footer />
+            </div>
         </main>
     );
 }
