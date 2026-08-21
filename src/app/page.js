@@ -119,7 +119,7 @@ export default function Home() {
           className="absolute inset-0 bg-cover bg-center scale-105"
           style={{
             backgroundImage:
-              "url('https://images.unsplash.com/photo-1514565131-fce0801e5785?q=80&w=2000')",
+              "url('https://upload.wikimedia.org/wikipedia/commons/4/45/Detroit_Skyline_from_Windsor_2025-09-01.jpg?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=original')",
           }}
         >
           <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/55 to-black/75" />
@@ -157,7 +157,7 @@ export default function Home() {
               Book Your Ride <ArrowRight size={14} />
             </Link>
             <a
-              href="tel:+7342732916"
+              href="tel:+17342732916"
               className="border border-white/25 text-white px-10 py-5 text-xs font-black uppercase tracking-[0.4em] hover:bg-white hover:text-black transition-all duration-300 inline-flex items-center gap-3"
             >
               <Phone size={14} /> Call Now
