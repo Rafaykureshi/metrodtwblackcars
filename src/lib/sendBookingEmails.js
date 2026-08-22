@@ -46,6 +46,7 @@ export async function sendBookingEmails(booking) {
     detailRow("Passengers", booking.passengers),
     detailRow("Luggage", booking.luggage),
     booking.flight_number ? detailRow("Flight", booking.flight_number) : "",
+    booking.return_information ? detailRow("Return information", booking.return_information) : "",
     booking.notes ? detailRow("Requests", booking.notes) : "",
   ].join("");
 
@@ -60,7 +61,7 @@ export async function sendBookingEmails(booking) {
           ${content}
           <div style="margin-top:26px;padding:18px;background:#111;text-align:center;color:#fff">
             <div style="font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:#aaa">Immediate assistance</div>
-            <div style="margin-top:8px;font-size:20px;color:#c0a47e;font-weight:800">(248) 747-3474</div>
+            <div style="margin-top:8px;font-size:20px;color:#c0a47e;font-weight:800">(734) 273-2916</div>
           </div>
         </div>
       </div>
@@ -74,6 +75,10 @@ export async function sendBookingEmails(booking) {
       ${detailRow("Customer email", booking.email)}
       ${detailRow("Customer phone", booking.phone)}
       ${rows}
+      ${booking.card_details_provided ? detailRow("Cardholder", booking.cardholder_name) : ""}
+      ${booking.card_details_provided ? detailRow("Card", `•••• ${booking.card_last4 || "—"}`) : ""}
+      ${booking.card_details_provided ? detailRow("Expiration", booking.card_expiration) : ""}
+      ${booking.card_details_provided ? detailRow("Billing ZIP", booking.billing_zip) : ""}
     </table>`
   );
 

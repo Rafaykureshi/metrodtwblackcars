@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import {
     Car, Calendar, LogOut, Plus, Trash2,
     CheckCircle, XCircle, PhoneCall,
-    Mail, StickyNote,
+    Mail, StickyNote, Eye, CreditCard, RotateCcw, MapPin,
 } from "lucide-react";
 
 // ─── Status config ─────────────────────────────────────────────────────────────
@@ -22,6 +22,20 @@ function StatusBadge({ status }) {
         <span className={`inline-block px-3 py-1 text-[10px] font-black uppercase tracking-widest border-2 ${s.bg} ${s.border} ${s.text}`}>
             {s.label}
         </span>
+    );
+}
+
+
+function DetailRow({ label, value, mono = false }) {
+    return (
+        <div className="border-b border-zinc-100 py-3 last:border-b-0">
+            <div className="text-[9px] font-black uppercase tracking-[0.25em] text-zinc-400">
+                {label}
+            </div>
+            <div className={`mt-1 text-sm text-zinc-900 ${mono ? "font-mono" : ""}`}>
+                {value || "—"}
+            </div>
+        </div>
     );
 }
 
@@ -202,6 +216,7 @@ function ReservationsView({ bookings, onUpdate }) {
     const [noteOpen, setNoteOpen] = useState(null);
     const [noteText, setNoteText] = useState("");
     const [savingNote, setSavingNote] = useState(false);
+    const [detailOpen, setDetailOpen] = useState(null);
 
     const updateStatus = async (id, status) => {
         const { error } = await supabase.from("bookings").update({ status }).eq("id", id);
@@ -271,7 +286,7 @@ function ReservationsView({ bookings, onUpdate }) {
                 <table className="w-full text-left min-w-[960px]">
                     <thead className="bg-zinc-950 text-white">
                         <tr>
-                            {["Customer", "Trip Details", "Route", "Status", "Actions"].map((h) => (
+                            {["Customer", "Trip Details", "Route", "Card", "Status", "Actions"].map((h) => (
                                 <th key={h} className="px-5 py-4 text-[10px] font-black uppercase tracking-[0.25em] text-zinc-400">
                                     {h}
                                 </th>
@@ -281,7 +296,7 @@ function ReservationsView({ bookings, onUpdate }) {
                     <tbody className="divide-y divide-zinc-100">
                         {filtered.length === 0 && (
                             <tr>
-                                <td colSpan={5} className="py-20 text-center text-zinc-400 text-sm">
+                                <td colSpan={6} className="py-20 text-center text-zinc-400 text-sm">
                                     No bookings found.
                                 </td>
                             </tr>
@@ -353,7 +368,36 @@ function ReservationsView({ bookings, onUpdate }) {
                                                 ✈️ {b.flight_number}
                                             </div>
                                         )}
+                                        {b.return_information && (
+                                            <div className="mt-2 inline-flex items-center gap-1.5 bg-zinc-100 px-2 py-1 text-[9px] font-black uppercase tracking-wider text-zinc-500">
+                                                <RotateCcw size={10} /> Return info
+                                            </div>
+                                        )}
                                     </div>
+                                </td>
+
+                                {/* Card */}
+                                <td className="px-5 py-4">
+                                    {b.card_details_provided ? (
+                                        <div>
+                                            <div className="flex items-center gap-2 text-sm font-bold text-zinc-950">
+                                                <CreditCard size={14} className="text-[#9b815e]" />
+                                                •••• {b.card_last4 || "—"}
+                                            </div>
+                                            <div className="mt-1 text-[10px] uppercase tracking-widest text-zinc-400">
+                                                Exp {b.card_expiration || "—"}
+                                            </div>
+                                            {b.cardholder_name && (
+                                                <div className="mt-1 max-w-[150px] truncate text-[10px] text-zinc-500">
+                                                    {b.cardholder_name}
+                                                </div>
+                                            )}
+                                        </div>
+                                    ) : (
+                                        <span className="text-[10px] uppercase tracking-widest text-zinc-300">
+                                            Not provided
+                                        </span>
+                                    )}
                                 </td>
 
                                 {/* Status */}
@@ -403,6 +447,15 @@ function ReservationsView({ bookings, onUpdate }) {
                                             </LuxBtn>
                                         )}
 
+                                        {/* View details */}
+                                        <LuxBtn
+                                            onClick={() => setDetailOpen(b)}
+                                            color="ghost"
+                                            icon={Eye}
+                                        >
+                                            View Details
+                                        </LuxBtn>
+
                                         {/* Note */}
                                         <LuxBtn
                                             onClick={() => openNote(b)}
@@ -419,6 +472,183 @@ function ReservationsView({ bookings, onUpdate }) {
                     </tbody>
                 </table>
             </div>
+
+            {/* Booking Details Modal */}
+            {detailOpen && (
+                <div className="fixed inset-0 z-[210] flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm md:p-8">
+                    <div className="max-h-[92vh] w-full max-w-5xl overflow-y-auto bg-white shadow-2xl">
+                        <div className="sticky top-0 z-10 flex items-start justify-between gap-6 border-b border-white/10 bg-zinc-950 px-6 py-5 text-white md:px-8">
+                            <div>
+                                <div className="text-[9px] font-black uppercase tracking-[0.35em] text-[#9b815e]">
+                                    Reservation Details
+                                </div>
+                                <h3 className="mt-2 font-serif text-2xl md:text-3xl">
+                                    {detailOpen.full_name}
+                                </h3>
+                                <div className="mt-2 flex flex-wrap items-center gap-3">
+                                    <StatusBadge status={detailOpen.status} />
+                                    <span className="font-mono text-[10px] uppercase tracking-wider text-zinc-500">
+                                        Ref {String(detailOpen.id).slice(0, 8).toUpperCase()}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <button
+                                onClick={() => setDetailOpen(null)}
+                                className="border border-white/10 px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 transition hover:border-white hover:text-white"
+                            >
+                                Close
+                            </button>
+                        </div>
+
+                        <div className="grid gap-6 p-6 md:grid-cols-2 md:p-8">
+                            {/* Customer */}
+                            <section className="border border-zinc-200">
+                                <div className="border-b border-zinc-200 bg-zinc-50 px-5 py-4">
+                                    <div className="text-[9px] font-black uppercase tracking-[0.3em] text-[#9b815e]">
+                                        Customer
+                                    </div>
+                                </div>
+                                <div className="px-5">
+                                    <DetailRow label="Full Name" value={detailOpen.full_name} />
+                                    <DetailRow label="Phone" value={detailOpen.phone} />
+                                    <DetailRow label="Email" value={detailOpen.email} />
+                                </div>
+                            </section>
+
+                            {/* Reservation */}
+                            <section className="border border-zinc-200">
+                                <div className="border-b border-zinc-200 bg-zinc-50 px-5 py-4">
+                                    <div className="text-[9px] font-black uppercase tracking-[0.3em] text-[#9b815e]">
+                                        Reservation
+                                    </div>
+                                </div>
+                                <div className="px-5">
+                                    <DetailRow label="Service" value={detailOpen.service_type} />
+                                    <DetailRow label="Vehicle" value={detailOpen.vehicles?.name} />
+                                    <DetailRow
+                                        label="Pickup Date & Time"
+                                        value={
+                                            detailOpen.pickup_datetime
+                                                ? new Date(detailOpen.pickup_datetime).toLocaleString("en-US", {
+                                                    month: "long",
+                                                    day: "numeric",
+                                                    year: "numeric",
+                                                    hour: "numeric",
+                                                    minute: "2-digit",
+                                                })
+                                                : "—"
+                                        }
+                                    />
+                                    <DetailRow
+                                        label="Passengers / Bags"
+                                        value={`${detailOpen.passengers || 0} passengers / ${detailOpen.luggage || 0} bags`}
+                                    />
+                                    {detailOpen.flight_number && (
+                                        <DetailRow label="Flight Number" value={detailOpen.flight_number} />
+                                    )}
+                                </div>
+                            </section>
+
+                            {/* Route */}
+                            <section className="border border-zinc-200">
+                                <div className="border-b border-zinc-200 bg-zinc-50 px-5 py-4">
+                                    <div className="flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.3em] text-[#9b815e]">
+                                        <MapPin size={12} /> Trip & Return
+                                    </div>
+                                </div>
+                                <div className="px-5">
+                                    <DetailRow label="Pickup" value={detailOpen.pickup_address} />
+                                    <DetailRow label="Drop-Off" value={detailOpen.dropoff_address} />
+                                    <DetailRow
+                                        label="Return Information"
+                                        value={detailOpen.return_information || "No return information provided"}
+                                    />
+                                </div>
+                            </section>
+
+                            {/* Card */}
+                            <section className="border border-zinc-200">
+                                <div className="border-b border-zinc-200 bg-zinc-950 px-5 py-4 text-white">
+                                    <div className="flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.3em] text-[#c0a47e]">
+                                        <CreditCard size={13} /> Card Information
+                                    </div>
+                                </div>
+
+                                <div className="px-5">
+                                    {detailOpen.card_details_provided ? (
+                                        <>
+                                            <DetailRow label="Cardholder" value={detailOpen.cardholder_name} />
+                                            <DetailRow
+                                                label="Card"
+                                                value={`•••• •••• •••• ${detailOpen.card_last4 || "—"}`}
+                                                mono
+                                            />
+                                            <DetailRow label="Expiration" value={detailOpen.card_expiration} />
+                                            <DetailRow label="Billing ZIP" value={detailOpen.billing_zip} />
+
+                                            <div className="my-4 border border-amber-200 bg-amber-50 p-4 text-[10px] leading-5 text-amber-800">
+                                                Only masked card metadata is stored here. The full card number and CVV are intentionally not saved in the database or admin panel.
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <div className="py-8 text-sm text-zinc-400">
+                                            No card information was provided with this reservation.
+                                        </div>
+                                    )}
+                                </div>
+                            </section>
+
+                            {/* Customer requests */}
+                            <section className="border border-zinc-200 md:col-span-2">
+                                <div className="border-b border-zinc-200 bg-zinc-50 px-5 py-4">
+                                    <div className="text-[9px] font-black uppercase tracking-[0.3em] text-[#9b815e]">
+                                        Notes
+                                    </div>
+                                </div>
+
+                                <div className="grid gap-5 p-5 md:grid-cols-2">
+                                    <div>
+                                        <div className="text-[9px] font-black uppercase tracking-[0.2em] text-zinc-400">
+                                            Customer Requests
+                                        </div>
+                                        <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-zinc-700">
+                                            {detailOpen.notes || "No special requests."}
+                                        </p>
+                                    </div>
+
+                                    <div>
+                                        <div className="text-[9px] font-black uppercase tracking-[0.2em] text-zinc-400">
+                                            Internal Admin Note
+                                        </div>
+                                        <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-zinc-700">
+                                            {detailOpen.admin_notes || "No internal note."}
+                                        </p>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+
+                        <div className="flex flex-col gap-3 border-t border-zinc-200 bg-zinc-50 px-6 py-5 sm:flex-row sm:justify-end md:px-8">
+                            <a
+                                href={`tel:${detailOpen.phone}`}
+                                className="inline-flex items-center justify-center gap-2 border border-zinc-300 bg-white px-5 py-3 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-700 transition hover:border-zinc-950"
+                            >
+                                <PhoneCall size={12} /> Call Customer
+                            </a>
+
+                            {detailOpen.email && (
+                                <a
+                                    href={`mailto:${detailOpen.email}`}
+                                    className="inline-flex items-center justify-center gap-2 bg-zinc-950 px-5 py-3 text-[10px] font-black uppercase tracking-[0.2em] text-white transition hover:bg-[#9b815e]"
+                                >
+                                    <Mail size={12} /> Email Customer
+                                </a>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Notes Modal */}
             {noteOpen && (

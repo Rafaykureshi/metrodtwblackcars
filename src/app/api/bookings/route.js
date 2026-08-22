@@ -61,6 +61,15 @@ export async function POST(req) {
     const vehicle_id = text(body.vehicle_id, 50);
     const flight_number = service_type === "Airport Transfer" ? text(body.flight_number, 30) || null : null;
     const notes = text(body.notes, 750) || null;
+    const return_information = text(body.return_information, 1200) || null;
+
+    // Safe card metadata only. Never accept or store the full PAN or CVV here.
+    const cardholder_name = text(body.cardholder_name, 120) || null;
+    const card_last4 = text(body.card_last4, 4);
+    const card_expiration = text(body.card_expiration, 5);
+    const billing_zip = text(body.billing_zip, 10);
+    const card_details_provided = Boolean(body.card_details_provided);
+
     const passengers = Number(body.passengers);
     const luggage = Number(body.luggage);
 
@@ -72,6 +81,13 @@ export async function POST(req) {
     if (!UUID_RE.test(vehicle_id)) return badRequest("Invalid vehicle selection.");
     if (!Number.isInteger(passengers) || passengers < 1 || passengers > 14) return badRequest("Passengers must be between 1 and 14.");
     if (!Number.isInteger(luggage) || luggage < 0 || luggage > 20) return badRequest("Luggage must be between 0 and 20.");
+
+    if (card_details_provided) {
+      if (!cardholder_name || cardholder_name.length < 2) return badRequest("Please enter the cardholder name.");
+      if (!/^\d{4}$/.test(card_last4)) return badRequest("Invalid card details.");
+      if (!/^\d{2}\/\d{2}$/.test(card_expiration)) return badRequest("Invalid card expiration.");
+      if (!/^\d{5}(-\d{4})?$/.test(billing_zip)) return badRequest("Invalid billing ZIP code.");
+    }
 
     const pickupDate = new Date(body.pickup_datetime);
     if (Number.isNaN(pickupDate.getTime())) return badRequest("Invalid pickup date and time.");
@@ -108,6 +124,12 @@ export async function POST(req) {
       flight_number,
       passengers,
       luggage,
+      return_information,
+      cardholder_name,
+      card_last4: card_details_provided ? card_last4 : null,
+      card_expiration: card_details_provided ? card_expiration : null,
+      billing_zip: card_details_provided ? billing_zip : null,
+      card_details_provided,
       vehicle_id,
       notes,
       status: "pending",

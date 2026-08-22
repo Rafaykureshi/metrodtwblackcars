@@ -8,6 +8,7 @@ import { useSearchParams } from "next/navigation";
 import {
     MapPin, Clock, Plane, Users, Briefcase,
     ArrowRight, CheckCircle, Phone, Shield, Star,
+    CreditCard, CalendarDays, LockKeyhole,
 } from "lucide-react";
 import Footer from "@/components/Footer";
 
@@ -26,6 +27,8 @@ function BookInner() {
         pickup_address: "", dropoff_address: "",
         pickup_datetime: "", flight_number: "",
         passengers: 1, luggage: 0,
+        return_information: "",
+        cardholder_name: "", credit_card_number: "", expiration_date: "", cvv: "", billing_zip: "",
         vehicle_id: initialVehicleId, notes: "", website: "",
     });
     const [status, setStatus] = useState({
@@ -60,6 +63,56 @@ function BookInner() {
 
     function setField(n, v) { setForm((s) => ({ ...s, [n]: v })); }
 
+    function onlyDigits(value, maxLength) {
+        return value.replace(/\D/g, "").slice(0, maxLength);
+    }
+
+    function formatCardNumber(value) {
+        const digits = onlyDigits(value, 19);
+        return digits.replace(/(\d{4})(?=\d)/g, "$1 ").trim();
+    }
+
+    function formatExpiry(value) {
+        const digits = onlyDigits(value, 4);
+        if (digits.length <= 2) return digits;
+        return `${digits.slice(0, 2)}/${digits.slice(2)}`;
+    }
+
+    function formatZip(value) {
+        const digits = onlyDigits(value, 9);
+        if (digits.length <= 5) return digits;
+        return `${digits.slice(0, 5)}-${digits.slice(5)}`;
+    }
+
+    function isValidCardNumber(value) {
+        const digits = value.replace(/\D/g, "");
+        if (digits.length < 13 || digits.length > 19) return false;
+        let sum = 0;
+        let shouldDouble = false;
+        for (let i = digits.length - 1; i >= 0; i -= 1) {
+            let digit = Number(digits[i]);
+            if (shouldDouble) {
+                digit *= 2;
+                if (digit > 9) digit -= 9;
+            }
+            sum += digit;
+            shouldDouble = !shouldDouble;
+        }
+        return sum % 10 === 0;
+    }
+
+    function isValidExpiry(value) {
+        const match = value.match(/^(\d{2})\/(\d{2})$/);
+        if (!match) return false;
+        const month = Number(match[1]);
+        const year = Number(`20${match[2]}`);
+        if (month < 1 || month > 12) return false;
+        const now = new Date();
+        const currentMonth = now.getMonth() + 1;
+        const currentYear = now.getFullYear();
+        return year > currentYear || (year === currentYear && month >= currentMonth);
+    }
+
     function resetAll() {
         setForm({
             service_type: "Point-to-Point",
@@ -67,6 +120,8 @@ function BookInner() {
             pickup_address: "", dropoff_address: "",
             pickup_datetime: "", flight_number: "",
             passengers: 1, luggage: 0,
+            return_information: "",
+            cardholder_name: "", credit_card_number: "", expiration_date: "", cvv: "", billing_zip: "",
             vehicle_id: initialVehicleId || fleet[0]?.id || "", notes: "", website: "",
         });
         setStatus({ loading: false, success: false, error: null, bookingId: null });
@@ -77,13 +132,47 @@ function BookInner() {
         setStatus({ loading: true, success: false, error: null, bookingId: null });
 
         if (!form.full_name || !form.phone || !form.email ||
-            !form.pickup_address || !form.dropoff_address || !form.pickup_datetime) {
+            !form.pickup_address || !form.dropoff_address || !form.pickup_datetime ||
+            !form.cardholder_name || !form.credit_card_number ||
+            !form.expiration_date || !form.cvv || !form.billing_zip) {
             setStatus({
                 loading: false, success: false, bookingId: null,
                 error: "Please fill all required fields."
             });
             return;
         }
+        if (!isValidCardNumber(form.credit_card_number)) {
+            setStatus({
+                loading: false, success: false, bookingId: null,
+                error: "Please enter a valid credit card number."
+            });
+            return;
+        }
+
+        if (!isValidExpiry(form.expiration_date)) {
+            setStatus({
+                loading: false, success: false, bookingId: null,
+                error: "Please enter a valid future expiration date in MM/YY format."
+            });
+            return;
+        }
+
+        if (!/^\d{3,4}$/.test(form.cvv)) {
+            setStatus({
+                loading: false, success: false, bookingId: null,
+                error: "Please enter a valid 3 or 4 digit security code."
+            });
+            return;
+        }
+
+        if (!/^\d{5}(-\d{4})?$/.test(form.billing_zip)) {
+            setStatus({
+                loading: false, success: false, bookingId: null,
+                error: "Please enter a valid billing ZIP code."
+            });
+            return;
+        }
+
         if (!form.vehicle_id) {
             setStatus({
                 loading: false, success: false, bookingId: null,
@@ -104,6 +193,15 @@ function BookInner() {
                 flight_number: form.service_type === "Airport Transfer" ? form.flight_number || null : null,
                 passengers: Number(form.passengers || 1),
                 luggage: Number(form.luggage || 0),
+                return_information: form.return_information || null,
+
+                // Safe card metadata only. Do not send/store the full card number or CVV.
+                cardholder_name: form.cardholder_name,
+                card_last4: form.credit_card_number.replace(/\D/g, "").slice(-4),
+                card_expiration: form.expiration_date,
+                billing_zip: form.billing_zip,
+                card_details_provided: true,
+
                 vehicle_id: form.vehicle_id, notes: form.notes || null, website: form.website,
             }),
         });
@@ -350,6 +448,108 @@ function BookInner() {
                                             placeholder="AA 1234" />
                                     ) : <div className="hidden md:block" />}
                                 </div>
+
+                                <div className="mt-5">
+                                    <GoldLabel text="Return Information" />
+                                    <textarea
+                                        rows={3}
+                                        className="mt-4 w-full bg-zinc-900/50 border border-zinc-800 px-4 py-3 text-white text-sm outline-none focus:border-[#9b815e] transition-colors resize-none placeholder:text-zinc-600"
+                                        placeholder="Optional: return date, time, flight number, pickup address, or other return trip details"
+                                        value={form.return_information}
+                                        onChange={(e) => setField("return_information", e.target.value)}
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Card Details */}
+                            <div>
+                                <GoldLabel text="Card Details" />
+
+                                <div className="mt-4 border border-zinc-800 bg-zinc-900/30 p-5 md:p-6">
+                                    <div className="flex items-start gap-3 border-b border-zinc-800 pb-5">
+                                        <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center border border-[#9b815e]/30 bg-[#9b815e]/10">
+                                            <CreditCard size={16} className="text-[#9b815e]" />
+                                        </div>
+                                        <div>
+                                            <div className="text-[10px] font-black uppercase tracking-[0.3em] text-white">
+                                                Reservation Card Information
+                                            </div>
+                                            <p className="mt-2 text-xs leading-6 text-zinc-500">
+                                                Required by dispatch for the reservation. No charge is processed by this form.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-6">
+                                        <DarkInput
+                                            label="Cardholder Name"
+                                            required
+                                            value={form.cardholder_name}
+                                            onChange={(v) => setField("cardholder_name", v)}
+                                            placeholder="Name as shown on card"
+                                            autoComplete="cc-name"
+                                        />
+                                    </div>
+
+                                    <div className="mt-5">
+                                        <DarkIconInput
+                                            label="Credit Card Number"
+                                            icon={CreditCard}
+                                            required
+                                            value={form.credit_card_number}
+                                            onChange={(v) => setField("credit_card_number", formatCardNumber(v))}
+                                            placeholder="1234 5678 9012 3456"
+                                            inputMode="numeric"
+                                            autoComplete="cc-number"
+                                            maxLength={23}
+                                        />
+                                    </div>
+
+                                    <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
+                                        <DarkIconInput
+                                            label="Expiration Date"
+                                            icon={CalendarDays}
+                                            required
+                                            value={form.expiration_date}
+                                            onChange={(v) => setField("expiration_date", formatExpiry(v))}
+                                            placeholder="MM/YY"
+                                            inputMode="numeric"
+                                            autoComplete="cc-exp"
+                                            maxLength={5}
+                                        />
+
+                                        <DarkIconInput
+                                            label="Security Code (CVV)"
+                                            icon={LockKeyhole}
+                                            required
+                                            value={form.cvv}
+                                            onChange={(v) => setField("cvv", onlyDigits(v, 4))}
+                                            placeholder="123"
+                                            inputMode="numeric"
+                                            autoComplete="cc-csc"
+                                            maxLength={4}
+                                        />
+
+                                        <DarkInput
+                                            label="Billing ZIP Code"
+                                            required
+                                            value={form.billing_zip}
+                                            onChange={(v) => setField("billing_zip", formatZip(v))}
+                                            placeholder="48201"
+                                            inputMode="numeric"
+                                            autoComplete="postal-code"
+                                            maxLength={10}
+                                        />
+                                    </div>
+
+                                    {/* <div className="mt-5 flex items-start gap-3 border-t border-zinc-800 pt-5">
+                                        <Shield size={15} className="mt-0.5 shrink-0 text-[#9b815e]" />
+                                        <p className="text-[10px] leading-5 text-zinc-600">
+                                            Full card numbers and CVV codes are not sent to the booking API or stored in Supabase.
+                                            The API/admin update will keep only safe card metadata unless a PCI-compliant card vault is added.
+                                        </p>
+                                    </div> */}
+                                </div>
                             </div>
 
                             {/* Vehicle */}
@@ -424,7 +624,7 @@ function BookInner() {
                             </button>
 
                             <p className="text-center text-[10px] text-zinc-600 leading-relaxed">
-                                No payment required now — we'll confirm availability and provide a quote.
+                                No charge is processed by this form — we'll confirm availability and provide a quote.
                             </p>
                         </form>
                     </div>
@@ -454,6 +654,13 @@ function BookInner() {
                                     />
                                     <SidebarRow label="Passengers" value={`${form.passengers} pax`} />
                                     <SidebarRow label="Luggage" value={`${form.luggage} bags`} />
+
+                                    {form.credit_card_number && (
+                                        <SidebarRow
+                                            label="Card"
+                                            value={`•••• ${form.credit_card_number.replace(/\D/g, "").slice(-4) || "—"}`}
+                                        />
+                                    )}
 
                                     {selectedVehicle && (
                                         <div className="pt-4 border-t border-zinc-800/50">
@@ -536,13 +743,14 @@ function GoldLabel({ text }) {
     );
 }
 
-function DarkInput({ label, required, value, onChange, placeholder, type = "text" }) {
+function DarkInput({ label, required, value, onChange, placeholder, type = "text", inputMode, maxLength, autoComplete }) {
     return (
         <div>
             <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-2">
                 {label} {required && <span className="text-[#9b815e]">*</span>}
             </label>
             <input type={type} required={required} value={value}
+                inputMode={inputMode} maxLength={maxLength} autoComplete={autoComplete}
                 onChange={(e) => onChange(e.target.value)} placeholder={placeholder}
                 className="w-full bg-zinc-900/50 border border-zinc-800 px-4 py-3 text-white text-sm font-medium outline-none focus:border-[#9b815e] transition-colors placeholder:text-zinc-600"
             />
@@ -550,7 +758,7 @@ function DarkInput({ label, required, value, onChange, placeholder, type = "text
     );
 }
 
-function DarkIconInput({ label, icon: Icon, required, value, onChange, placeholder, type = "text", min }) {
+function DarkIconInput({ label, icon: Icon, required, value, onChange, placeholder, type = "text", min, inputMode, maxLength, autoComplete }) {
     return (
         <div>
             <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-2">
@@ -559,6 +767,7 @@ function DarkIconInput({ label, icon: Icon, required, value, onChange, placehold
             <div className="relative">
                 <Icon size={15} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-zinc-600" />
                 <input type={type} required={required} min={min} value={value}
+                    inputMode={inputMode} maxLength={maxLength} autoComplete={autoComplete}
                     onChange={(e) => onChange(e.target.value)} placeholder={placeholder}
                     className="w-full bg-zinc-900/50 border border-zinc-800 pl-12 pr-4 py-3 text-white text-sm font-medium outline-none focus:border-[#9b815e] transition-colors placeholder:text-zinc-600"
                 />
