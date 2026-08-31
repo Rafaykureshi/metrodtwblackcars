@@ -35,12 +35,26 @@ export default function PrivacyPage() {
                                 <li>Name</li>
                                 <li>Email address</li>
                                 <li>Phone number</li>
-                                <li>Payment information (collected securely for billing purposes)</li>
+                                <li>
+                                    Reservation card information, including cardholder name, billing ZIP,
+                                    expiration date, and masked card information used for reservation/payment authorization
+                                </li>
                                 <li>Pick-up and drop-off locations</li>
                             </ul>
 
                             <h3 className="font-semibold text-zinc-900 mb-2">
-                                1.2 Non-Personal Information
+                                1.2 Card Information
+                            </h3>
+
+                            <p className="mb-6">
+                                When card information is entered as part of a reservation request, the website records
+                                only the cardholder name, masked last four digits, expiration date, billing ZIP,
+                                and the customer&apos;s acknowledgement of the card notice. The booking database and
+                                reservation emails do not retain the full card number or CVV/security code.
+                            </p>
+
+                            <h3 className="font-semibold text-zinc-900 mb-2">
+                                1.3 Non-Personal Information
                             </h3>
 
                             <ul className="list-disc pl-6 space-y-1">
@@ -81,7 +95,8 @@ export default function PrivacyPage() {
                             </p>
 
                             <ul className="list-disc pl-6 space-y-1">
-                                <li>Secure data encryption for online transactions</li>
+                                <li>HTTPS encryption for information transmitted through the website</li>
+                                <li>Full card numbers and CVV/security codes are not retained in the booking database or booking emails</li>
                                 <li>Limited access to personal information by authorized personnel only</li>
                                 <li>Regularly updated security protocols to protect against breaches</li>
                                 <li>No sharing of personal information with third parties without your consent</li>
@@ -99,7 +114,7 @@ export default function PrivacyPage() {
                             </p>
 
                             <ul className="list-disc pl-6 space-y-1">
-                                <li>With trusted service providers (e.g., payment processors) to facilitate services</li>
+                                <li>With service providers only when needed to provide reservations, communications, payment authorization, or related business services</li>
                                 <li>As required by law or to comply with legal obligations</li>
                             </ul>
                         </div>
@@ -121,7 +136,7 @@ export default function PrivacyPage() {
                             </ul>
 
                             <p>
-                                To exercise your rights, please contact us at book@metrodtwblackcars.com or +1 (248) 747-3474.
+                                To exercise your rights, please contact us at Metrodtwblackcars@gmail.com or +1 (734) 273-2916.
                             </p>
                         </div>
 
@@ -154,8 +169,8 @@ export default function PrivacyPage() {
                             </h2>
 
                             <p>
-                                Email: book@metrodtwblackcars.com <br />
-                                Phone: 734-673-1031
+                                Email: Metrodtwblackcars@gmail.com <br />
+                                Phone: +1 (734) 273-2916
                             </p>
                         </div>
 

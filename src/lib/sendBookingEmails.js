@@ -79,6 +79,8 @@ export async function sendBookingEmails(booking) {
       ${booking.card_details_provided ? detailRow("Card", `•••• ${booking.card_last4 || "—"}`) : ""}
       ${booking.card_details_provided ? detailRow("Expiration", booking.card_expiration) : ""}
       ${booking.card_details_provided ? detailRow("Billing ZIP", booking.billing_zip) : ""}
+      ${booking.card_details_provided ? detailRow("Card acknowledgement", booking.card_consent ? "Accepted" : "Not accepted") : ""}
+      ${booking.card_consent_at ? detailRow("Acknowledged at", new Date(booking.card_consent_at).toLocaleString("en-US")) : ""}
     </table>`
   );
 

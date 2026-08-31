@@ -29,6 +29,7 @@ function BookInner() {
         passengers: 1, luggage: 0,
         return_information: "",
         cardholder_name: "", credit_card_number: "", expiration_date: "", cvv: "", billing_zip: "",
+        card_consent: false,
         vehicle_id: initialVehicleId, notes: "", website: "",
     });
     const [status, setStatus] = useState({
@@ -122,6 +123,7 @@ function BookInner() {
             passengers: 1, luggage: 0,
             return_information: "",
             cardholder_name: "", credit_card_number: "", expiration_date: "", cvv: "", billing_zip: "",
+            card_consent: false,
             vehicle_id: initialVehicleId || fleet[0]?.id || "", notes: "", website: "",
         });
         setStatus({ loading: false, success: false, error: null, bookingId: null });
@@ -134,7 +136,7 @@ function BookInner() {
         if (!form.full_name || !form.phone || !form.email ||
             !form.pickup_address || !form.dropoff_address || !form.pickup_datetime ||
             !form.cardholder_name || !form.credit_card_number ||
-            !form.expiration_date || !form.cvv || !form.billing_zip) {
+            !form.expiration_date || !form.cvv || !form.billing_zip || !form.card_consent) {
             setStatus({
                 loading: false, success: false, bookingId: null,
                 error: "Please fill all required fields."
@@ -173,6 +175,15 @@ function BookInner() {
             return;
         }
 
+
+        if (!form.card_consent) {
+            setStatus({
+                loading: false, success: false, bookingId: null,
+                error: "Please confirm that you understand and agree to the card authorization notice."
+            });
+            return;
+        }
+
         if (!form.vehicle_id) {
             setStatus({
                 loading: false, success: false, bookingId: null,
@@ -201,6 +212,7 @@ function BookInner() {
                 card_expiration: form.expiration_date,
                 billing_zip: form.billing_zip,
                 card_details_provided: true,
+                card_consent: form.card_consent,
 
                 vehicle_id: form.vehicle_id, notes: form.notes || null, website: form.website,
             }),
@@ -542,13 +554,39 @@ function BookInner() {
                                         />
                                     </div>
 
-                                    {/* <div className="mt-5 flex items-start gap-3 border-t border-zinc-800 pt-5">
-                                        <Shield size={15} className="mt-0.5 shrink-0 text-[#9b815e]" />
-                                        <p className="text-[10px] leading-5 text-zinc-600">
-                                            Full card numbers and CVV codes are not sent to the booking API or stored in Supabase.
-                                            The API/admin update will keep only safe card metadata unless a PCI-compliant card vault is added.
-                                        </p>
-                                    </div> */}
+                                    <div className="mt-5 border-t border-zinc-800 pt-5">
+                                        <label className="flex cursor-pointer items-start gap-3">
+                                            <input
+                                                type="checkbox"
+                                                checked={form.card_consent}
+                                                onChange={(e) => setField("card_consent", e.target.checked)}
+                                                required
+                                                className="mt-1 h-4 w-4 shrink-0 accent-[#9b815e]"
+                                            />
+                                            <span className="text-xs leading-6 text-zinc-400">
+                                                I acknowledge that I am voluntarily entering card information for this reservation.
+                                                I understand that only masked card metadata is retained by this website and that
+                                                Metro DTW Black Cars may contact me if secure payment authorization is required,
+                                                in accordance with the{" "}
+                                                <Link href="/terms" className="text-[#c0a47e] underline underline-offset-2 hover:text-white">
+                                                    Terms &amp; Conditions
+                                                </Link>{" "}
+                                                and{" "}
+                                                <Link href="/privacy" className="text-[#c0a47e] underline underline-offset-2 hover:text-white">
+                                                    Privacy Policy
+                                                </Link>.
+                                            </span>
+                                        </label>
+
+                                        <div className="mt-4 flex items-start gap-3 border border-zinc-800 bg-black/20 p-4">
+                                            <Shield size={15} className="mt-0.5 shrink-0 text-[#9b815e]" />
+                                            <p className="text-[10px] leading-5 text-zinc-600">
+                                                For security, the booking database and admin panel retain only the cardholder name,
+                                                last four digits, expiration date, billing ZIP, and acknowledgement record.
+                                                The full card number and CVV are not stored in Supabase, the admin panel, or booking emails.
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -661,6 +699,11 @@ function BookInner() {
                                             value={`•••• ${form.credit_card_number.replace(/\D/g, "").slice(-4) || "—"}`}
                                         />
                                     )}
+
+                                    <SidebarRow
+                                        label="Card Consent"
+                                        value={form.card_consent ? "Accepted" : "Not accepted"}
+                                    />
 
                                     {selectedVehicle && (
                                         <div className="pt-4 border-t border-zinc-800/50">

@@ -104,6 +104,33 @@ export default function TermsPage() {
                             </p>
                         </div>
 
+                        {/* Card Information & Authorization */}
+                        <div>
+                            <h2 className="font-semibold text-lg text-zinc-900 mb-3">
+                                Card Information &amp; Reservation Authorization
+                            </h2>
+
+                            <p>
+                                A customer may be asked to provide card information when submitting a reservation.
+                                By checking the card acknowledgement box on the booking form, the customer confirms
+                                that the card information is being provided voluntarily for reservation and payment
+                                authorization related to the requested transportation service.
+                            </p>
+
+                            <p className="mt-4">
+                                The website&apos;s booking database retains only masked card information and the
+                                acknowledgement record. The full card number and CVV/security code are not retained
+                                in the booking database or booking confirmation emails.
+                            </p>
+
+                            <p className="mt-4">
+                                Any charge, cancellation fee, gratuity, waiting charge, airport fee, damage fee,
+                                sanitation fee, car-seat fee, or other applicable amount remains subject to the
+                                pricing and cancellation terms stated on this page and any quote or reservation
+                                confirmation provided by Metro DTW Black Cars.
+                            </p>
+                        </div>
+
                         {/* Liabilities */}
                         <div>
                             <h2 className="font-semibold text-lg text-zinc-900 mb-3">
@@ -148,7 +175,9 @@ export default function TermsPage() {
                             <p>
                                 By accessing this website and/or making a reservation, whether
                                 online or in person, you acknowledge and agree to the terms and
-                                conditions written above.
+                                conditions written above. When the booking form requests a card
+                                acknowledgement, submitting the reservation also confirms the
+                                acknowledgement selected on that form.
                             </p>
                         </div>
 

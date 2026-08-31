@@ -544,6 +544,20 @@ function ReservationsView({ bookings, onUpdate }) {
                                         label="Passengers / Bags"
                                         value={`${detailOpen.passengers || 0} passengers / ${detailOpen.luggage || 0} bags`}
                                     />
+                                    <DetailRow
+                                        label="Booking Submitted"
+                                        value={
+                                            detailOpen.created_at
+                                                ? new Date(detailOpen.created_at).toLocaleString("en-US", {
+                                                    month: "long",
+                                                    day: "numeric",
+                                                    year: "numeric",
+                                                    hour: "numeric",
+                                                    minute: "2-digit",
+                                                })
+                                                : "—"
+                                        }
+                                    />
                                     {detailOpen.flight_number && (
                                         <DetailRow label="Flight Number" value={detailOpen.flight_number} />
                                     )}
@@ -586,9 +600,27 @@ function ReservationsView({ bookings, onUpdate }) {
                                             />
                                             <DetailRow label="Expiration" value={detailOpen.card_expiration} />
                                             <DetailRow label="Billing ZIP" value={detailOpen.billing_zip} />
+                                            <DetailRow
+                                                label="Card Authorization Acknowledgement"
+                                                value={detailOpen.card_consent ? "Accepted" : "Not accepted"}
+                                            />
+                                            <DetailRow
+                                                label="Acknowledged At"
+                                                value={
+                                                    detailOpen.card_consent_at
+                                                        ? new Date(detailOpen.card_consent_at).toLocaleString("en-US", {
+                                                            month: "long",
+                                                            day: "numeric",
+                                                            year: "numeric",
+                                                            hour: "numeric",
+                                                            minute: "2-digit",
+                                                        })
+                                                        : "—"
+                                                }
+                                            />
 
                                             <div className="my-4 border border-amber-200 bg-amber-50 p-4 text-[10px] leading-5 text-amber-800">
-                                                Only masked card metadata is stored here. The full card number and CVV are intentionally not saved in the database or admin panel.
+                                                All non-sensitive reservation fields are shown here. Card data is intentionally masked: the full card number and CVV are not stored in the database or admin panel.
                                             </div>
                                         </>
                                     ) : (

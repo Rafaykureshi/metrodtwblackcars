@@ -69,6 +69,7 @@ export async function POST(req) {
     const card_expiration = text(body.card_expiration, 5);
     const billing_zip = text(body.billing_zip, 10);
     const card_details_provided = Boolean(body.card_details_provided);
+    const card_consent = body.card_consent === true;
 
     const passengers = Number(body.passengers);
     const luggage = Number(body.luggage);
@@ -83,6 +84,7 @@ export async function POST(req) {
     if (!Number.isInteger(luggage) || luggage < 0 || luggage > 20) return badRequest("Luggage must be between 0 and 20.");
 
     if (card_details_provided) {
+      if (!card_consent) return badRequest("Card authorization acknowledgement is required.");
       if (!cardholder_name || cardholder_name.length < 2) return badRequest("Please enter the cardholder name.");
       if (!/^\d{4}$/.test(card_last4)) return badRequest("Invalid card details.");
       if (!/^\d{2}\/\d{2}$/.test(card_expiration)) return badRequest("Invalid card expiration.");
@@ -130,6 +132,8 @@ export async function POST(req) {
       card_expiration: card_details_provided ? card_expiration : null,
       billing_zip: card_details_provided ? billing_zip : null,
       card_details_provided,
+      card_consent,
+      card_consent_at: card_consent ? new Date().toISOString() : null,
       vehicle_id,
       notes,
       status: "pending",
