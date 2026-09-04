@@ -146,6 +146,16 @@ export default function Footer() {
 
                     <p>
                         © {new Date().getFullYear()} Metro DTW Black Cars. All rights reserved.
+                        <span className="block mt-1 text-xs text-zinc-500">
+                          Technology Partner:{" "}
+                          <a
+                            href="https://codantix.tech"
+                            className="transition-colors hover:text-white"
+                            aria-label="Codantix Tech"
+                          >
+                            Codantix Tech
+                          </a>
+                        </span>
                     </p>
 
                     <div className="flex gap-6">
